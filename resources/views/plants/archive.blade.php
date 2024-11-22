@@ -17,13 +17,10 @@
             <td class="border border-gray-300 px-4 py-2">{{ $plant->description }}</td>
             <td class="border border-gray-300 px-4 py-2">{{ $plant->batch_number }}</td>
             <td class="border border-gray-300 px-4 py-2">
-                <form action="{{ route('plants.archive', $plant) }}" method="POST">
+                <form action="{{ route('plants.restore', $plant) }}" method="POST">
                     @csrf
                     @method('PATCH')
-                    <x-button
-                        class="bg-green-600 text-white hover:bg-green-700">
-                        Restore
-                    </x-button>
+                    <x-form.button color="green" >  Restore  </x-form.button>
                 </form>
             </td>
         </tr>

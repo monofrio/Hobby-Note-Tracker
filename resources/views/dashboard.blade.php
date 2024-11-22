@@ -26,7 +26,7 @@
                                     {{ $batch->name }}
                                 </a>
                             </td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $batch->total_plants }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $batch->active_plants }}</td>
                             <td class="border border-gray-300 px-4 py-2">{{ $batch->batch_number }}</td>
                         </tr>
                     @endforeach

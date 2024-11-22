@@ -1,7 +1,12 @@
 <x-app-layout>
 
     <div class="mx-auto max-w-2xl">
-        <x-h1>Edit Plant</x-h1>
+        <x-slot name="header">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit Plant') }}
+            </h2>
+
+        </x-slot>
 
         <form method="POST" action="{{ route('plants.update', $plant) }}">
             @csrf
@@ -25,17 +30,18 @@
 
             <x-form.select
                 label="Start Type"
+                name="start_type"
                 :options="['seed' => 'Seed', 'transplant' => 'Transplant', 'clone' => 'Clone']"
                 selected="transplant"
                 :checked="old('start_type', $plant->location_type)"
             />
-
-            <x-primary-button color="blue" type="submit">Update Plant</x-primary-button>
+            <br/>
+            <x-form.button color="blue" >Update Plant</x-form.button>
         </form>
+        <hr class="my-6"/>
+        <a href="{{ route('plants.show', $plant) }}"
+           class="bg-blue-500 text-white  px-4 py-2 rounded hover:bg-blue-600 ">
+            Back to {{$plant->name}}
+        </a>
     </div>
-
-    <a href="{{ route('plants.show', $plant) }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-        Back to {{$plant->name}}
-    </a>
 </x-app-layout>

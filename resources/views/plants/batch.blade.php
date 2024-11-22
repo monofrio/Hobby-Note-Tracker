@@ -26,6 +26,7 @@
         </thead>
         <tbody>
         @foreach ($plants as $plant)
+            @if($plant->archived === 0)
             <tr>
                 <td class="border border-gray-300 px-4 py-2">
                     {{ $plant->name }}
@@ -34,27 +35,29 @@
                 <td class="border border-gray-300 px-4 py-2">{{ ucfirst($plant->location_type) }}</td>
                 <td class="border border-gray-300 px-4 py-2">{{ ucfirst($plant->start_type) }}</td>
 {{--                <td class="border border-gray-300 px-4 py-2">{{ $plant->batch_plant_number }}</td>--}}
-                <td class="border border-gray-300 px-4 py-2">
-                    <a href="{{ route('plants.show', $plant) }}"
-                       class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                        View
-                    </a>
-                    &nbsp;
-                    <a href="{{ route('plants.edit', $plant) }}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Edit
-                    </a>
-
-                    <form action="{{ route('plants.archive', $plant) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <x-button class="bg-yellow-600 text-white hover:bg-yellow-700">Archive</x-button>
-                    </form>
-
-
-
+                <td class="border border-gray-300 px-4 py-2 flex flex-row justify-evenly space-x-3">
+                    <div>
+                        <a href="{{ route('plants.show', $plant) }}"
+                           class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                            View
+                        </a>
+                    &nbsp;</div>
+                    <div>
+                        <a href="{{ route('plants.edit', $plant) }}"
+                           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Edit
+                        </a>
+                    </div>
+                    <div>
+                        <form class="m-0 p-0" action="{{ route('plants.archive', $plant) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="bg-yellow-500 text-white px-3.5 py-1.5 -mt-2 rounded hover:bg-yellow-600">Archive</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
+            @endif
         @endforeach
         </tbody>
     </table>

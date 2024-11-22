@@ -6,26 +6,22 @@ use App\Models\Plant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
 use Illuminate\Support\Facades\Log;
-
 
 class PlantController extends Controller
 {
     public function index(Request $request)
     {
-        // Use a query builder instance to allow filtering
         $query = Plant::query();
 
-        // Apply the "archived" or "active" filter
         if ($request->has('archived') && $request->archived == 'true') {
             $query = $query->archived();
         } else {
             $query = $query->active();
         }
 
-        $plants = $query->get(); // Retrieve the filtered plants
-        $plantCount = $plants->count(); // Count the retrieved plants
+        $plants = $query->get();
+        $plantCount = $plants->count();
 
         return view('plants.index', compact('plants', 'plantCount'));
     }
@@ -33,7 +29,11 @@ class PlantController extends Controller
     public function show(Plant $plant)
     {
         $plant->load('notes');
-        return view('plants.show', compact('plant'));
+        $activePlants = Plant::where('batch_number', $plant->batch_number)
+            ->where('archived', false)
+            ->count();
+
+        return view('plants.show', compact('plant', 'activePlants'));
     }
 
     public function create()
@@ -110,10 +110,6 @@ class PlantController extends Controller
     {
         $plants = Plant::where('is_exported', false)->get();
 
-//        if ($plants->isEmpty()) {
-//            return redirect()->route('plants.review');
-//        }
-
         return view('plants.export', compact('plants'));
     }
 
@@ -186,9 +182,12 @@ class PlantController extends Controller
 
     public function showBatch($batchNumber)
     {
-        $plants = \App\Models\Plant::where('batch_number', $batchNumber)->get();
+        $plants = Plant::where('batch_number', $batchNumber)->get();
 
-        // Fetch the batch description (assuming all plants in the batch share the same description)
+        if ($plants->isEmpty()) {
+            return redirect()->route('plants.index')->with('error', 'Batch not found.');
+        }
+
         $batchDescription = $plants->first()->description ?? 'No description available';
 
         return view('plants.batch', compact('plants', 'batchNumber', 'batchDescription'));
@@ -196,15 +195,20 @@ class PlantController extends Controller
 
     public function archive(Plant $plant)
     {
-        $plant->archived = true; // Set the archived flag to true
-        $plant->save();          // Save the changes to the database
+        $plant->archived = true;
+        $plant->save();
+
+        Plant::updateBatchCount($plant->batch_number);
 
         return redirect()->route('plants.index')->with('success', 'Plant archived successfully.');
     }
 
     public function archiveBatch($batchNumber)
     {
-        \App\Models\Plant::where('batch_number', $batchNumber)->update(['archived' => true]);
+        Plant::where('batch_number', $batchNumber)->update(['archived' => true]);
+
+        Plant::updateBatchCount($batchNumber);
+
         return redirect()->route('plants.index')->with('success', 'Batch archived successfully.');
     }
 
@@ -226,6 +230,4 @@ class PlantController extends Controller
         Plant::where('batch_number', $batchNumber)->update(['archived' => false]);
         return redirect()->route('plants.archive.list')->with('success', 'Batch restored successfully.');
     }
-
 }
-

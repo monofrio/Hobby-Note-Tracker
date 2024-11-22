@@ -8,7 +8,7 @@
         <div><strong>Description:</strong> {{ $plant->description }}</div>
         <div><strong>Location Type:</strong> {{ ucfirst($plant->location_type) }}</div>
 
-        <div><strong>Plant Number:</strong> {{ $plant->batch_plant_number }} of {{ \App\Models\Plant::where('batch_number', $plant->batch_number)->count() }}</div>
+        <div><strong>Plant Number:</strong> {{ $plant->batch_plant_number }} of {{  $plant->active_plants  }}</div>
         <div><strong>Start Type:</strong> {{ ucfirst($plant->start_type) }}</div>
         <div><strong>Batch Number:</strong> {{ $plant->batch_number }}</div>
 
@@ -26,7 +26,7 @@
         >
             @csrf
             @method('DELETE')
-            <x-button class="inline-flex items-center px-4 py-2 bg-red-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Delete') }}</x-button>
+            <x-form.button color="red">{{ __('Delete') }}</x-form.button>
         </form>
     </aside>
 
@@ -45,7 +45,7 @@
             value=""
             required="true"
         />
-        <x-button color="blue" type="submit">Add Note</x-button>
+        <x-form.button color="blue" type="submit">Add Note</x-form.button>
     </form>
 
 

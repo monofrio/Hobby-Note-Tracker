@@ -20,6 +20,7 @@ Route::get('/dashboard', function () {
     $chirps = Chirp::with('user')->latest()->get();
     $batches = \App\Models\Plant::select('batch_number', 'name')
         ->selectRaw('COUNT(*) as total_plants')
+        ->selectRaw('SUM(CASE WHEN archived = 0 THEN 1 ELSE 0 END) as active_plants')
         ->groupBy('batch_number')
         ->get();
     $notExportedCount = \App\Models\Plant::where('is_exported', false)->count();
