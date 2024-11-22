@@ -1,7 +1,7 @@
 @props(['label', 'value' => '', 'required' => true])
 
 <div class="col-span-full">
-    <x-input-label for="{{ $label }}">{{ $label }}</x-input-label>
+    <x-form.label for="{{ $label }}">{{ $label }}</x-form.label>
     <div class="mt-2">
         <textarea
             name="{{ $label }}"

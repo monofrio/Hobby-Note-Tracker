@@ -49,7 +49,7 @@ Route::resource('plants', PlantController::class)
     ->only(['index', 'store', 'edit', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);;
 
-Route::get('/plants/batch/{batchNumber}', [PlantController::class, 'showBatch'])->name('plants.batch');
+Route::get('/plants/archive', [PlantController::class, 'archiveList'])->name('plants.archive.list');
 
 Route::get('/plants/create', [PlantController::class, 'create'])->name('plants.create');
 
@@ -60,7 +60,12 @@ Route::get('/plants/review-export', [PlantController::class, 'showReviewPage'])-
 Route::post('/plants/review-export', [PlantController::class, 'addToExport'])->name('plants.review.submit');
 
 Route::get('/plants/{plant}', [PlantController::class, 'show'])->name('plants.show');
-
+Route::patch('/plants/{plant}/archive', [PlantController::class, 'archive'])->name('plants.archive');
 Route::post('/plants/{plant}/notes', [NoteController::class, 'store'])->name('notes.store');
+Route::patch('/plants/{plant}/restore', [PlantController::class, 'restore'])->name('plants.restore');
+
+Route::get('/plants/batch/{batchNumber}', [PlantController::class, 'showBatch'])->name('plants.batch');
+Route::patch('/plants/batch/{batchNumber}/archive', [PlantController::class, 'archiveBatch'])->name('plants.batch.archive');
+Route::patch('/plants/batch/{batchNumber}/restore', [PlantController::class, 'restoreBatch'])->name('plants.batch.restore');
 
 require __DIR__.'/auth.php';

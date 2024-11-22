@@ -1,6 +1,12 @@
 <x-app-layout>
+
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Plants in Batch') }} {{ $batchNumber }}
+        </h2>
+    </x-slot>
+
     <section>
-    <h1 class="text-4xl">Plants in Batch {{ $batchNumber }}</h1>
 
     {{-- Display Batch Description --}}
     <div class="mb-4">
@@ -38,6 +44,14 @@
                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                         Edit
                     </a>
+
+                    <form action="{{ route('plants.archive', $plant) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <x-button class="bg-yellow-600 text-white hover:bg-yellow-700">Archive</x-button>
+                    </form>
+
+
 
                 </td>
             </tr>

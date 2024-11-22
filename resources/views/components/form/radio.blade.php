@@ -1,7 +1,7 @@
 @props(['label', 'name', 'options' => [], 'checked' => null, 'required' => true, 'type', 'value'])
 
 <div class="col-span-full">
-    <x-form.input.label>{{ $label }}</x-form.input.label>
+    <x-form.label for="{{ $label }}">{{ $label }}</x-form.label>
     <div class="mt-2">
         @foreach ($options as $value => $text)
             <div class="flex items-center gap-x-3">
@@ -21,4 +21,3 @@
         @endforeach
     </div>
 </div>
-

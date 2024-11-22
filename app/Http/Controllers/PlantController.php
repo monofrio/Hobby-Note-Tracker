@@ -7,12 +7,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\Log;
+
+
 class PlantController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $plants = Plant::all();
-        $plantCount = $plants->count(); // Plant count for the main page
+        // Use a query builder instance to allow filtering
+        $query = Plant::query();
+
+        // Apply the "archived" or "active" filter
+        if ($request->has('archived') && $request->archived == 'true') {
+            $query = $query->archived();
+        } else {
+            $query = $query->active();
+        }
+
+        $plants = $query->get(); // Retrieve the filtered plants
+        $plantCount = $plants->count(); // Count the retrieved plants
 
         return view('plants.index', compact('plants', 'plantCount'));
     }
@@ -30,6 +43,8 @@ class PlantController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Incoming Request:', $request->all());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -179,6 +194,38 @@ class PlantController extends Controller
         return view('plants.batch', compact('plants', 'batchNumber', 'batchDescription'));
     }
 
+    public function archive(Plant $plant)
+    {
+        $plant->archived = true; // Set the archived flag to true
+        $plant->save();          // Save the changes to the database
+
+        return redirect()->route('plants.index')->with('success', 'Plant archived successfully.');
+    }
+
+    public function archiveBatch($batchNumber)
+    {
+        \App\Models\Plant::where('batch_number', $batchNumber)->update(['archived' => true]);
+        return redirect()->route('plants.index')->with('success', 'Batch archived successfully.');
+    }
+
+    public function archiveList()
+    {
+        $archivedPlants = Plant::archived()->get();
+
+        return view('plants.archive', compact('archivedPlants'));
+    }
+
+    public function restore(Plant $plant)
+    {
+        $plant->update(['archived' => false]);
+        return redirect()->route('plants.archive.list')->with('success', 'Plant restored successfully.');
+    }
+
+    public function restoreBatch($batchNumber)
+    {
+        Plant::where('batch_number', $batchNumber)->update(['archived' => false]);
+        return redirect()->route('plants.archive.list')->with('success', 'Batch restored successfully.');
+    }
 
 }
 

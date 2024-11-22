@@ -44,6 +44,8 @@
                 @endif
             </section>
 
+
+
 {{-- ## Chrips ## --}}
 {{--            <section class="max-w-7xl mx-auto mt-4 sm:px-6 lg:px-8">--}}
 {{--                <div class="max-w-7xl mx-auto"> <h2 class="font-semibold text-xl text-gray-800">The lastest Chrips</h2> </div>--}}
